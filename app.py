@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from queue import Queue
 from services.webhook import send_webhook
 import threading
@@ -6,8 +6,54 @@ import uuid
 import os
 import time
 from version import BUILD_NUMBER  # Import the BUILD_NUMBER
+from minio import Minio
+from minio.error import S3Error
+import io
+from dotenv import load_dotenv
+load_dotenv()  # Charger les variables d'environnement du fichier .env
 
 MAX_QUEUE_LENGTH = int(os.environ.get('MAX_QUEUE_LENGTH', 0))
+
+# Configuration MinIO
+minio_client = Minio(
+    os.environ.get('MINIO_ENDPOINT', 'localhost:9000'),
+    access_key=os.environ.get('MINIO_ACCESS_KEY', 'minioadmin'),
+    secret_key=os.environ.get('MINIO_SECRET_KEY', 'minioadmin'),
+    secure=False
+)
+
+def upload_to_minio(file, bucket_name='default', object_name=None):
+    """
+    Téléverse un fichier vers MinIO
+    
+    :param file: Fichier à téléverser
+    :param bucket_name: Nom du bucket MinIO
+    :param object_name: Nom de l'objet dans MinIO (optionnel)
+    :return: URL de l'objet téléversé ou None en cas d'erreur
+    """
+    try:
+        # Créer le bucket s'il n'existe pas
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
+
+        # Générer un nom d'objet si non fourni
+        if object_name is None:
+            object_name = f"{uuid.uuid4()}_{file.filename}"
+
+        # Téléverser le fichier
+        minio_client.put_object(
+            bucket_name, 
+            object_name, 
+            file.stream, 
+            file.content_length
+        )
+
+        # Retourner l'URL de l'objet
+        return f"/{bucket_name}/{object_name}"
+
+    except S3Error as e:
+        print(f"Erreur lors du téléversement vers MinIO : {e}")
+        return None
 
 def create_app():
     app = Flask(__name__)
@@ -153,6 +199,27 @@ def create_app():
     app.register_blueprint(v1_toolkit_test_bp)
     app.register_blueprint(v1_toolkit_auth_bp)
     app.register_blueprint(v1_code_execute_bp)
+
+    @app.route('/upload', methods=['POST'])
+    def upload_file():
+        """
+        Route pour téléverser un fichier vers MinIO
+        """
+        if 'file' not in request.files:
+            return jsonify({"error": "Aucun fichier n'a été téléversé"}), 400
+        
+        file = request.files['file']
+        bucket_name = request.form.get('bucket', 'default')
+        
+        if file.filename == '':
+            return jsonify({"error": "Aucun fichier sélectionné"}), 400
+        
+        file_url = upload_to_minio(file, bucket_name)
+        
+        if file_url:
+            return jsonify({"message": "Fichier téléversé avec succès", "url": file_url}), 200
+        else:
+            return jsonify({"error": "Échec du téléversement"}), 500
 
     return app
 

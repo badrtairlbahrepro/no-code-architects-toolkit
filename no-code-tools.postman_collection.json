@@ -1,0 +1,250 @@
+{
+	"info": {
+		"_postman_id": "no-code-architects-toolkit",
+		"name": "No Code Architects Toolkit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"your_username\",\n    \"password\": \"your_password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/toolkit/authenticate",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "toolkit", "authenticate"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Media Processing",
+			"item": [
+				{
+					"name": "Transcribe Media",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "language",
+									"value": "en",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/media/transcribe",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "media", "transcribe"]
+						}
+					}
+				},
+				{
+					"name": "Convert Media to MP3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/media/transform/to-mp3",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "media", "transform", "to-mp3"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Video Processing",
+			"item": [
+				{
+					"name": "Concatenate Videos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/video/concatenate",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "video", "concatenate"]
+						}
+					}
+				},
+				{
+					"name": "Add Captions to Video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "srt",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/video/caption",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "video", "caption"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Image Processing",
+			"item": [
+				{
+					"name": "Convert Images to Video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/image/transform/to-video",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "image", "transform", "to-video"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Code Execution",
+			"item": [
+				{
+					"name": "Execute Python Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"print('Hello, World!')\"\n}",
+							"options": {
+								"raw": {
+									"language": "python"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/v1/code/execute/python",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "code", "execute", "python"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Google Drive",
+			"item": [
+				{
+					"name": "Upload to Google Drive",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "folder_id",
+									"value": "your_folder_id",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/gdrive/upload",
+							"host": ["{{base_url}}"],
+							"path": ["gdrive", "upload"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Miscellaneous",
+			"item": [
+				{
+					"name": "Test Endpoint",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/v1/toolkit/test",
+							"host": ["{{base_url}}"],
+							"path": ["v1", "toolkit", "test"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io"
+		}
+	]
+}
