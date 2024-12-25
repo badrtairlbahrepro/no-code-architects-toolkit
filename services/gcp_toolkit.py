@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # MinIO environment variables
-MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', 'https://minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io')
+MINIO_ENDPOINT = "minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io"
 MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY', 'XmF3n33euDkufzDA')
 MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY', 'NIbo1lSyRmzDGnpc0wNyxW52ZojsOQF1')
 MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'bucket-no-code-tools')
@@ -24,7 +24,7 @@ def initialize_minio_client():
             MINIO_ENDPOINT,
             access_key=MINIO_ACCESS_KEY,
             secret_key=MINIO_SECRET_KEY,
-            secure=False  # Set to True if using HTTPS
+            secure=True
         )
         
         # Check if bucket exists, create if not

@@ -16,10 +16,10 @@ MAX_QUEUE_LENGTH = int(os.environ.get('MAX_QUEUE_LENGTH', 0))
 
 # Configuration MinIO
 minio_client = Minio(
-    os.environ.get('MINIO_ENDPOINT', 'localhost:9000'),
-    access_key=os.environ.get('MINIO_ACCESS_KEY', 'minioadmin'),
-    secret_key=os.environ.get('MINIO_SECRET_KEY', 'minioadmin'),
-    secure=False
+    "minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io",
+    access_key=os.environ.get('MINIO_ACCESS_KEY', 'XmF3n33euDkufzDA'),
+    secret_key=os.environ.get('MINIO_SECRET_KEY', 'NIbo1lSyRmzDGnpc0wNyxW52ZojsOQF1'),
+    secure=True
 )
 
 def upload_to_minio(file, bucket_name='default', object_name=None):
