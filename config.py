@@ -15,9 +15,9 @@ S3_ACCESS_KEY = os.environ.get('S3_ACCESS_KEY', '')
 S3_SECRET_KEY = os.environ.get('S3_SECRET_KEY', '')
 
 # MinIO environment variables
-MINIO_ENDPOINT = os.environ.get('MINIO_ENDPOINT', '')
-MINIO_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY', '')
-MINIO_SECRET_KEY = os.environ.get('MINIO_SECRET_KEY', '')
+MINIO_ENDPOINT = os.environ.get('MINIO_ENDPOINT', 'minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io')
+MINIO_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY', 'xysDRrnFVvtJg07rynR5')
+MINIO_SECRET_KEY = os.environ.get('MINIO_SECRET_KEY', 'trVjKEZPAnDsMizus6zHrClRJl22Qy1yMV7mIVOO')
 MINIO_BUCKET_NAME = os.environ.get('MINIO_BUCKET_NAME', 'bucket-no-code-tools')
 
 def validate_env_vars(provider):
@@ -47,23 +47,29 @@ class GCPStorageProvider(CloudStorageProvider):
         return upload_to_gcs(file_path, self.bucket_name)
 
 class S3CompatibleProvider(CloudStorageProvider):
-    """ S3-compatible storage provider (e.g., DigitalOcean Spaces) """
+    """ S3-compatible storage provider (e.g., DigitalOcean Spaces, MinIO) """
     def __init__(self):
-        self.bucket_name = os.getenv('S3_BUCKET_NAME')
-        self.region = os.getenv('S3_REGION')
-        self.endpoint_url = os.getenv('S3_ENDPOINT_URL')
-        self.access_key = os.getenv('S3_ACCESS_KEY')
-        self.secret_key = os.getenv('S3_SECRET_KEY')
+        self.endpoint_url = os.getenv('S3_ENDPOINT_URL') or MINIO_ENDPOINT
+        self.access_key = os.getenv('S3_ACCESS_KEY') or MINIO_ACCESS_KEY
+        self.secret_key = os.getenv('S3_SECRET_KEY') or MINIO_SECRET_KEY
+        self.bucket_name = os.getenv('S3_BUCKET_NAME') or MINIO_BUCKET_NAME
 
     def upload_file(self, file_path: str) -> str:
         from services.s3_toolkit import upload_to_s3
-        return upload_to_s3(file_path, self.bucket_name, self.region, self.endpoint_url, self.access_key, self.secret_key)
+        return upload_to_s3(file_path, self.endpoint_url, self.access_key, self.secret_key, self.bucket_name)
 
 def get_storage_provider() -> CloudStorageProvider:
     """ Get the appropriate storage provider based on the available environment variables """
-    if os.getenv('S3_BUCKET_NAME'):
-        validate_env_vars('S3')
-        return S3CompatibleProvider()
-    else:
+    try:
         validate_env_vars('GCP')
         return GCPStorageProvider()
+    except ValueError:
+        try:
+            validate_env_vars('S3')
+            return S3CompatibleProvider()
+        except ValueError:
+            try:
+                validate_env_vars('MINIO')
+                return S3CompatibleProvider()
+            except ValueError:
+                raise ValueError("No valid cloud storage configuration found. Please set GCP, S3, or MinIO environment variables.")

@@ -4,14 +4,12 @@ import logging
 from minio import Minio
 from minio.error import S3Error
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # MinIO environment variables
 MINIO_ENDPOINT = "minio-jo0w0sg0o0gocc4wo4g8cwcg.156.67.31.20.sslip.io"
-MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY', 'XmF3n33euDkufzDA')
-MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY', 'NIbo1lSyRmzDGnpc0wNyxW52ZojsOQF1')
+MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY', 'xysDRrnFVvtJg07rynR5')
+MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY', 'trVjKEZPAnDsMizus6zHrClRJl22Qy1yMV7mIVOO')
 MINIO_BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'bucket-no-code-tools')
 STORAGE_PATH = "/tmp/"
 
@@ -24,7 +22,7 @@ def initialize_minio_client():
             MINIO_ENDPOINT,
             access_key=MINIO_ACCESS_KEY,
             secret_key=MINIO_SECRET_KEY,
-            secure=False  # Set to True if using HTTPS
+            secure=True
         )
         
         # Check if bucket exists, create if not

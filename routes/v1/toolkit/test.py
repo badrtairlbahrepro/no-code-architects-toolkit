@@ -4,7 +4,6 @@ from flask import Blueprint
 from services.authentication import authenticate
 from services.cloud_storage import upload_file
 from app_utils import queue_task_wrapper
-from services.gcp_toolkit import minio_client  # Ajout pour vérifier le client MinIO
 
 v1_toolkit_test_bp = Blueprint('v1_toolkit_test', __name__)
 logger = logging.getLogger(__name__)
