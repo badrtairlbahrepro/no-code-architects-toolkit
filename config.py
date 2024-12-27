@@ -14,11 +14,18 @@ S3_ENDPOINT_URL = os.environ.get('S3_ENDPOINT_URL', '')
 S3_ACCESS_KEY = os.environ.get('S3_ACCESS_KEY', '')
 S3_SECRET_KEY = os.environ.get('S3_SECRET_KEY', '')
 
+# MinIO environment variables
+MINIO_ENDPOINT = os.environ.get('MINIO_ENDPOINT', '')
+MINIO_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY', '')
+MINIO_SECRET_KEY = os.environ.get('MINIO_SECRET_KEY', '')
+MINIO_BUCKET_NAME = os.environ.get('MINIO_BUCKET_NAME', 'bucket-no-code-tools')
+
 def validate_env_vars(provider):
     """ Validate the necessary environment variables for the selected storage provider """
     required_vars = {
         'GCP': ['GCP_BUCKET_NAME', 'GCP_SA_CREDENTIALS'],
-        'S3': ['S3_ENDPOINT_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY']
+        'S3': ['S3_ENDPOINT_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY'],
+        'MINIO': ['MINIO_ENDPOINT', 'MINIO_ACCESS_KEY', 'MINIO_SECRET_KEY']
     }
     
     missing_vars = [var for var in required_vars[provider] if not os.getenv(var)]

@@ -10,7 +10,6 @@ v1_toolkit_test_bp = Blueprint('v1_toolkit_test', __name__)
 logger = logging.getLogger(__name__)
 
 STORAGE_PATH = "/tmp/"
-BUCKET_NAME = os.getenv('MINIO_BUCKET_NAME', 'bucket-no-code-tools')
 
 @v1_toolkit_test_bp.route('/v1/toolkit/test', methods=['GET'])
 @authenticate
@@ -19,11 +18,6 @@ def test_api(job_id, data):
     logger.info(f"Job {job_id}: Testing NCA Toolkit API setup")
     
     try:
-        # Vérifier l'existence du bucket
-        if not minio_client.bucket_exists(BUCKET_NAME):
-            logger.warning(f"Bucket {BUCKET_NAME} does not exist. Creating...")
-            minio_client.make_bucket(BUCKET_NAME)
-        
         # Create test file
         test_filename = os.path.join(STORAGE_PATH, "success.txt")
         with open(test_filename, 'w') as f:

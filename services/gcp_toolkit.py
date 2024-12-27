@@ -24,7 +24,7 @@ def initialize_minio_client():
             MINIO_ENDPOINT,
             access_key=MINIO_ACCESS_KEY,
             secret_key=MINIO_SECRET_KEY,
-            secure=True
+            secure=False  # Set to True if using HTTPS
         )
         
         # Check if bucket exists, create if not
